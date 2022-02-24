@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core" xmlns:http="http://www.mulesoft.org/schema/mule/http"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd">
+	<http:listener-config name="HTTP_Listener_config" doc:name="HTTP Listener config" doc:id="a394128b-feed-4a58-a900-6225f727f736" >
+		<http:listener-connection host="0.0.0.0" port="8081" />
+	</http:listener-config>
+	<flow name="main" doc:id="89141995-ced7-4f7b-b223-a52cfd5ed2ba" >
+		<http:listener doc:name="Listener" doc:id="6a1ad315-97ec-4685-983d-5263b055dfee" config-ref="HTTP_Listener_config" path="/flow"/>
+		<logger level="INFO" doc:name="Logger" doc:id="7f606452-ad35-4055-8d9c-22094320d630" message="main logger 1"/>
+		<set-variable value="pass input to from main to child" doc:name="Set Variable" doc:id="58dfaf19-dffe-4529-8d82-eca8f32f649d" variableName="mainvar" />
+		<set-payload value="main payload" doc:name="Set Payload" doc:id="7dba633c-72d3-4f41-8324-e2c4f2060557" />
+		<async doc:name="Async" doc:id="0eaa4c3f-053d-4256-b9ed-8d111e89467f" >
+			<flow-ref doc:name="Flow Reference" doc:id="7fef25eb-bddd-480c-b200-dced4c29ffb1" name="subflow" />
+		</async>
+		<logger level="INFO" doc:name="Logger" doc:id="1c92f75f-7305-457e-85ea-bd319a8b63aa" message="logger 2 in main #[payload]"/>
+	</flow>
+	<sub-flow name="subflow" doc:id="5b72f3e6-2b6a-44ec-bbbb-5c9eb85af423" >
+		<logger level="INFO" doc:name="Logger" doc:id="83f56a19-498c-4f65-b973-f5acb49febb4" message="subflow logger 1 . #[payload]"/>
+		<logger level="INFO" doc:name="Logger" doc:id="aef70104-039e-4ba9-a238-1896a38e6f5e" message="second sublogger #[vars.mainvar]"/>
+		<set-payload value="sub payload" doc:name="Set Payload" doc:id="16612f13-e292-49e5-b093-c5915627277d" />
+	</sub-flow>
+</mule>
